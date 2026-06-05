@@ -30,6 +30,9 @@ Evitar: `bb_reversion` (bloqueia demais), `macd_bb` (poucos sinais).
 # Backtest
 python run.py -c config.adaptativo.yaml backtest
 
+# Último mês (~30 dias)
+python run.py -c config.adaptativo.yaml simular-mes
+
 # FBS (Windows + MT5 aberto)
 python run.py mt5-test -c config.fbs-adaptativo.yaml
 python run.py -c config.fbs-adaptativo.yaml paper --once

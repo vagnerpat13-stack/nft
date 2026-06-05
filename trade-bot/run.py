@@ -7,6 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import pandas as pd
 import yaml
 
 ROOT = Path(__file__).resolve().parent
@@ -72,6 +73,35 @@ def cmd_paper(cfg: dict, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_simular_mes(cfg: dict, args: argparse.Namespace) -> int:
+    symbol = args.symbol or cfg["symbol"]
+    estrategia = args.estrategia or cfg.get("estrategia", "ema_rsi")
+    interval = cfg.get("interval", "1h")
+    dias = args.dias
+    cfg = {**cfg, "estrategia": estrategia}
+
+    df = fetch(symbol, period="1mo", interval=interval)
+    cutoff = df.index[-1] - pd.Timedelta(days=dias)
+    df_m = df[df.index >= cutoff].copy()
+
+    print(f"Simulação — últimos {dias} dias")
+    print(f"  {symbol} | {interval} | {estrategia} | memória adaptativa: sim")
+    print(f"  De {df_m.index[0]} até {df_m.index[-1]} ({len(df_m)} candles)\n")
+
+    result = run_backtest(df_m, cfg)
+    print_report(result, symbol, cfg["capital_inicial"], estrategia)
+
+    if result.trades:
+        print("Todas as operações do período:")
+        for i, t in enumerate(result.trades, 1):
+            sinal = "+" if t.lucro > 0 else ""
+            print(
+                f"  {i}. {t.lado:5} {str(t.entrada)[:16]} → {str(t.saida)[:16]} | "
+                f"{sinal}R$ {t.lucro:.2f} ({t.motivo})"
+            )
+    return 0
+
+
 def cmd_mt5_test(cfg: dict, args: argparse.Namespace) -> int:
     from src.mt5_session import Mt5Session
     from src.brokers.mt5_broker import Mt5Broker
@@ -129,6 +159,14 @@ def main() -> int:
     p_mt5 = sub.add_parser("mt5-test", help="Testa conexão FBS/MT5 (Windows)")
     p_mt5.add_argument("--symbol", help="Símbolo MT5 (ex: EURUSD)")
 
+    p_sim = sub.add_parser("simular-mes", help="Backtest só no último mês (~30 dias)")
+    p_sim.add_argument("--symbol", help="Símbolo")
+    p_sim.add_argument("--dias", type=int, default=30, help="Janela em dias (padrão 30)")
+    p_sim.add_argument(
+        "--estrategia",
+        choices=["ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion"],
+    )
+
     args = parser.parse_args()
     cfg = load_config(args.config)
 
@@ -138,6 +176,8 @@ def main() -> int:
         return cmd_paper(cfg, args)
     if args.command == "mt5-test":
         return cmd_mt5_test(cfg, args)
+    if args.command == "simular-mes":
+        return cmd_simular_mes(cfg, args)
     return 1
 
 
