@@ -1,0 +1,39 @@
+{
+  "escola": "EE Estadual ___ - Zona Rural",
+  "municipio": "",
+  "sre": "",
+  "ano_letivo": 2026,
+  "trimestre_atual": 2,
+  "aulas_minutos": 50,
+  "aulas_por_semana": {
+    "1_ano": 2,
+    "2_ano": 2,
+    "3_ano": 2
+  },
+  "conteudo_em_foco": {
+    "1_ano": "funções",
+    "2_ano": "trigonometria",
+    "3_ano": "geometria_analitica"
+  },
+  "avaliacoes": {
+    "diagnostica_2026_aplicada": true,
+    "primeira_trimestral_aplicada": true,
+    "data_primeira_trimestral": "2026-06-03",
+    "percentual_acerto_medio": {
+      "1_ano": null,
+      "2_ano": null,
+      "3_ano": null
+    }
+  },
+  "lacunas_prioritarias": {
+    "1_ano": [],
+    "2_ano": [],
+    "3_ano": []
+  },
+  "recursos": {
+    "laboratorio_informatica": false,
+    "internet_estavel": false,
+    "material_aprender_ja": true
+  },
+  "observacoes": "Turmas com dificuldade de aprendizagem; contexto rural."
+}
