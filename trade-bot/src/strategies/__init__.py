@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 from .base import BaseStrategy
+from .bb_reversion import BbReversionStrategy
+from .ema_pullback import EmaPullbackStrategy
 from .ema_rsi import EmaRsiStrategy
 from .macd_bb import MacdBbStrategy
+from .rsi_bb import RsiBbStrategy
 
 STRATEGIES: dict[str, type[BaseStrategy]] = {
     "ema_rsi": EmaRsiStrategy,
     "macd_bb": MacdBbStrategy,
+    "rsi_bb": RsiBbStrategy,
+    "ema_pullback": EmaPullbackStrategy,
+    "bb_reversion": BbReversionStrategy,
 }
 
 

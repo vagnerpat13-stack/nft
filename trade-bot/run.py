@@ -110,13 +110,16 @@ def main() -> int:
     p_bt.add_argument("--period", help="Período yfinance (1y, 2y)")
     p_bt.add_argument(
         "--estrategia",
-        choices=["ema_rsi", "macd_bb"],
-        help="ema_rsi ou macd_bb",
+        choices=["ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion"],
+        help="Estratégia de sinais",
     )
 
     p_paper = sub.add_parser("paper", help="Paper trading em tempo real")
     p_paper.add_argument("--symbol", help="Símbolo")
-    p_paper.add_argument("--estrategia", choices=["ema_rsi", "macd_bb"])
+    p_paper.add_argument(
+        "--estrategia",
+        choices=["ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion"],
+    )
     p_paper.add_argument(
         "--once",
         action="store_true",

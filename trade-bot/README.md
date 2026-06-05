@@ -11,7 +11,7 @@ Sistema com **backtest**, **paper trading** em tempo real, **duas estratégias**
 | **Adaptação** | Penaliza regimes que geraram perda; bloqueia sinais similares |
 | **Backtest** | Histórico yfinance |
 | **Paper** | Poll periódico, estado salvo em `data/estado.json` |
-| **Estratégias** | `ema_rsi` (EMA + RSI), `macd_bb` (MACD + Bollinger) |
+| **Estratégias** | `ema_rsi`, `macd_bb`, **`rsi_bb`**, **`ema_pullback`**, `bb_reversion` |
 | **Brokers** | `simulado`, `alpaca` (EUA), **`mt5`** (FBS / MetaTrader 5) |
 
 ## Instalação
@@ -20,6 +20,30 @@ Sistema com **backtest**, **paper trading** em tempo real, **duas estratégias**
 cd trade-bot
 pip install -r requirements.txt
 ```
+
+## Estratégias com maior taxa de acerto (backtest interno)
+
+| Estratégia | Melhor em | Taxa de acerto* | Retorno* |
+|------------|-----------|-----------------|----------|
+| **`rsi_bb`** | PETR4 diário, EURUSD 1h | ~78–79% | +3% a +11% |
+| **`ema_pullback`** | EURUSD 1h (FBS) | **~83%** | +6% |
+| `bb_reversion` | EURUSD 1h (muitas ops) | ~74% | +13% |
+
+\*Com TP 2% / SL 4%, 2 anos de dados yfinance. **Passado ≠ futuro.**
+
+```bash
+# Ações BR (PETR4) — preset alta acerto
+python run.py -c config.alta-acerto.yaml backtest
+
+# FBS forex — preset ema_pullback
+python run.py -c config.fbs-alta-acerto.yaml backtest  # + interval 1h no script
+python run.py backtest --estrategia rsi_bb --symbol PETR4.SA
+python run.py backtest --estrategia ema_pullback --symbol EURUSD=X --period 730d
+```
+
+**`rsi_bb`:** RSI &lt; 32 + preço na banda inferior → compra; RSI &gt; 68 + banda superior → venda.
+
+**`ema_pullback`:** Tendência (EMA 9/21) + RSI em zona de pullback → entrada a favor da tendência.
 
 ## Backtest
 
