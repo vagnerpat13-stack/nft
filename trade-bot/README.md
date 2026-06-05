@@ -21,6 +21,25 @@ cd trade-bot
 pip install -r requirements.txt
 ```
 
+## Modo ATIVO (mais operações no mês)
+
+Para **mais trades**, use `bb_active` com stop/alvo **curtos** (fecha rápido → abre outra posição).
+
+| Preset | Ops/mês* | Estratégia |
+|--------|----------|------------|
+| `config.ativo.yaml` | **~6–11** | Toque nas Bandas Bollinger |
+| `config.adaptativo.yaml` | ~1–2 | ema_rsi (seletivo) |
+
+\*GBPUSD 1h, backtest ~6 meses. Último mês pode variar.
+
+```bash
+python run.py -c config.ativo.yaml backtest
+python run.py -c config.ativo.yaml simular-mes
+python run.py -c config.fbs-ativo.yaml paper --once   # FBS
+```
+
+Ainda mais operações: no config, troque para `ema_cross` (comentado no arquivo).
+
 ## Memória adaptativa (preset pronto)
 
 Combinação recomendada: **`ema_rsi`** + **GBPUSD 1h** + memória calibrada.

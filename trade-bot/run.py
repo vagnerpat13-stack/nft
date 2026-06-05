@@ -140,7 +140,10 @@ def main() -> int:
     p_bt.add_argument("--period", help="Período yfinance (1y, 2y)")
     p_bt.add_argument(
         "--estrategia",
-        choices=["ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion"],
+        choices=[
+            "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
+            "ema_cross", "bb_active", "rsi_cross",
+        ],
         help="Estratégia de sinais",
     )
 
@@ -148,7 +151,10 @@ def main() -> int:
     p_paper.add_argument("--symbol", help="Símbolo")
     p_paper.add_argument(
         "--estrategia",
-        choices=["ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion"],
+        choices=[
+            "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
+            "ema_cross", "bb_active", "rsi_cross",
+        ],
     )
     p_paper.add_argument(
         "--once",
@@ -164,7 +170,10 @@ def main() -> int:
     p_sim.add_argument("--dias", type=int, default=30, help="Janela em dias (padrão 30)")
     p_sim.add_argument(
         "--estrategia",
-        choices=["ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion"],
+        choices=[
+            "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
+            "ema_cross", "bb_active", "rsi_cross",
+        ],
     )
 
     args = parser.parse_args()
