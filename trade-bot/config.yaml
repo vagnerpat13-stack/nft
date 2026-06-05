@@ -1,9 +1,20 @@
-# Modo: backtest | paper (paper = simulação em tempo real sem ordens reais)
+# Modo CLI: python run.py backtest | python run.py paper
 mode: backtest
 
 symbol: PETR4.SA
 interval: 1d
 period: 2y
+
+# Paper trading (tempo real)
+paper_interval: 5m
+paper_periodo: 5d
+paper_poll_segundos: 300
+arquivo_estado: data/estado.json
+
+# Broker: simulado (B3 via yfinance) | alpaca (EUA, requer API keys)
+broker: simulado
+
+estrategia: ema_rsi
 
 capital_inicial: 10000.0
 risco_por_operacao: 0.02
@@ -12,12 +23,19 @@ take_profit_pct: 0.06
 max_operacoes_dia: 3
 drawdown_max_pct: 0.15
 
-# Estratégia base (EMA + RSI)
+# Estratégia ema_rsi
 ema_rapida: 9
 ema_lenta: 21
 rsi_periodo: 14
 rsi_sobrecompra: 70
 rsi_sobrevenda: 30
+
+# Estratégia macd_bb
+macd_rapido: 12
+macd_lento: 26
+macd_sinal: 9
+bb_periodo: 20
+bb_desvio: 2.0
 
 # Adaptação aos erros
 confianca_minima: 0.45
