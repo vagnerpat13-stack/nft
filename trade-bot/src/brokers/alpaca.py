@@ -76,7 +76,14 @@ class AlpacaBroker(BaseBroker):
             timestamp=str(bar.get("t", "")),
         )
 
-    def submit_market(self, symbol: str, side: Side, quantity: float) -> OrderResult:
+    def submit_market(
+        self,
+        symbol: str,
+        side: Side,
+        quantity: float,
+        stop: float | None = None,
+        target: float | None = None,
+    ) -> OrderResult:
         sym = symbol.replace(".SA", "").upper()
         alpaca_side = "buy" if side == "long" else "sell"
         try:

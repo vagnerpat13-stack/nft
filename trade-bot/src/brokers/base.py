@@ -36,9 +36,13 @@ class BaseBroker(ABC):
     def get_cash(self) -> float:
         ...
 
-    @abstractmethod
     def submit_market(
-        self, symbol: str, side: Side, quantity: float
+        self,
+        symbol: str,
+        side: Side,
+        quantity: float,
+        stop: float | None = None,
+        target: float | None = None,
     ) -> OrderResult:
         ...
 

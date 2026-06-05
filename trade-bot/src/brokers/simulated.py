@@ -33,7 +33,14 @@ class SimulatedBroker(BaseBroker):
     def get_cash(self) -> float:
         return self.cash
 
-    def submit_market(self, symbol: str, side: Side, quantity: float) -> OrderResult:
+    def submit_market(
+        self,
+        symbol: str,
+        side: Side,
+        quantity: float,
+        stop: float | None = None,
+        target: float | None = None,
+    ) -> OrderResult:
         quote = self.get_quote(symbol)
         cost = quote.price * quantity
         self.order_seq += 1

@@ -72,6 +72,28 @@ def cmd_paper(cfg: dict, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_mt5_test(cfg: dict, args: argparse.Namespace) -> int:
+    from src.mt5_session import Mt5Session
+    from src.brokers.mt5_broker import Mt5Broker
+
+    symbol = args.symbol or cfg.get("mt5_symbol", cfg.get("symbol", "EURUSD"))
+    print("Testando conexão MetaTrader 5 (FBS)...\n")
+
+    acc = Mt5Session.account_info(cfg)
+    print(f"  Login:    {acc['login']}")
+    print(f"  Servidor: {acc['server']}")
+    print(f"  Saldo:    {acc['balance']:.2f} {acc['currency']}")
+    print(f"  Equity:   {acc['equity']:.2f}")
+
+    broker = Mt5Broker(cfg)
+    quote = broker.get_quote(symbol)
+    print(f"\n  Símbolo:  {quote.symbol}")
+    print(f"  Preço:    {quote.price}")
+    print(f"  Hora:     {quote.timestamp}")
+    print("\nConexão OK. Use: python run.py paper -c config.fbs.yaml --once")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Robô de trade adaptativo")
     parser.add_argument(
@@ -101,6 +123,9 @@ def main() -> int:
         help="Executa um único ciclo (útil para teste)",
     )
 
+    p_mt5 = sub.add_parser("mt5-test", help="Testa conexão FBS/MT5 (Windows)")
+    p_mt5.add_argument("--symbol", help="Símbolo MT5 (ex: EURUSD)")
+
     args = parser.parse_args()
     cfg = load_config(args.config)
 
@@ -108,6 +133,8 @@ def main() -> int:
         return cmd_backtest(cfg, args)
     if args.command == "paper":
         return cmd_paper(cfg, args)
+    if args.command == "mt5-test":
+        return cmd_mt5_test(cfg, args)
     return 1
 
 

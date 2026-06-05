@@ -1,0 +1,52 @@
+# Exemplo: FBS + MetaTrader 5 (Windows)
+# Copie para config.yaml ou use: python run.py paper -c config.fbs.yaml
+
+mode: paper
+broker: mt5
+fonte_dados: mt5
+
+# Símbolo exatamente como no MT5 (Observação de Mercado)
+symbol: EURUSD
+mt5_symbol: EURUSD
+
+paper_interval: 5m
+mt5_barras: 500
+paper_poll_segundos: 60
+arquivo_estado: data/estado-fbs.json
+
+estrategia: ema_rsi
+
+# Conta demo FBS recomendada para testes
+capital_inicial: 10000.0
+risco_por_operacao: 0.02
+stop_loss_pct: 0.01
+take_profit_pct: 0.02
+max_operacoes_dia: 5
+drawdown_max_pct: 0.15
+
+# Volume em LOTES (0.01 = micro lote em EURUSD)
+mt5_lote: 0.01
+mt5_magic: 202606
+mt5_desvio_pontos: 30
+mt5_fechar_apenas_magic: true
+mt5_comentario: trade-bot-fbs
+
+# Caminho do terminal (opcional — deixe vazio se MT5 já estiver aberto)
+# mt5_path: "C:\\Program Files\\FBS MetaTrader 5\\terminal64.exe"
+
+ema_rapida: 9
+ema_lenta: 21
+rsi_periodo: 14
+rsi_sobrecompra: 70
+rsi_sobrevenda: 30
+
+macd_rapido: 12
+macd_lento: 26
+macd_sinal: 9
+bb_periodo: 20
+bb_desvio: 2.0
+
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995

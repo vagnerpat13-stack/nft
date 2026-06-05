@@ -1,4 +1,4 @@
-"""Corretoras: simulada (B3/yfinance) e Alpaca (EUA)."""
+"""Corretoras: simulada, Alpaca (EUA) e MetaTrader 5 (FBS)."""
 
 from __future__ import annotations
 
@@ -16,4 +16,10 @@ def get_broker(name: str, cfg: dict) -> BaseBroker:
         from .alpaca import AlpacaBroker
 
         return AlpacaBroker(cfg)
-    raise ValueError(f"Broker '{name}' inválido. Use: simulado, alpaca")
+    if key in ("mt5", "fbs", "metatrader", "metatrader5"):
+        from .mt5_broker import Mt5Broker
+
+        return Mt5Broker(cfg)
+    raise ValueError(
+        f"Broker '{name}' inválido. Use: simulado, alpaca, mt5 (FBS/MetaTrader 5)"
+    )

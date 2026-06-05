@@ -11,8 +11,10 @@ paper_periodo: 5d
 paper_poll_segundos: 300
 arquivo_estado: data/estado.json
 
-# Broker: simulado (B3 via yfinance) | alpaca (EUA, requer API keys)
+# Broker: simulado | alpaca (EUA) | mt5 (FBS MetaTrader 5 — Windows)
 broker: simulado
+# fonte_dados: auto | yfinance | mt5
+fonte_dados: auto
 
 estrategia: ema_rsi
 

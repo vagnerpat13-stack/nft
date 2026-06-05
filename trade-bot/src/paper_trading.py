@@ -9,6 +9,21 @@ from pathlib import Path
 from .brokers import get_broker
 from .brokers.base import BaseBroker
 from .data import fetch_recent
+
+
+def _fetch_candles(cfg: dict, symbol: str):
+    broker = cfg.get("broker", "simulado").lower()
+    fonte = cfg.get("fonte_dados", "auto").lower()
+    use_mt5 = fonte == "mt5" or broker in ("mt5", "fbs", "metatrader", "metatrader5")
+    if fonte == "yfinance":
+        use_mt5 = False
+    if use_mt5:
+        from .data_mt5 import fetch_recent_mt5
+
+        return fetch_recent_mt5(symbol, cfg)
+    interval = cfg.get("paper_interval", cfg.get("interval", "5m"))
+    period = cfg.get("paper_periodo", "5d")
+    return fetch_recent(symbol, interval=interval, period=period)
 from .engine import TradingEngine
 from .state import PersistedState, load_state, save_state
 from .strategies import get_strategy
@@ -36,7 +51,13 @@ def _sync_broker_open(broker: BaseBroker, symbol: str, engine: TradingEngine) ->
     pos = engine.state.position
     if pos is None:
         return
-    result = broker.submit_market(symbol, pos.side, pos.quantity)  # type: ignore
+    result = broker.submit_market(
+        symbol,
+        pos.side,
+        pos.quantity,
+        stop=pos.stop,
+        target=pos.target,
+    )  # type: ignore[arg-type]
     if result.ok:
         print(f"  [broker] Abertura {pos.side} @ {result.filled_price:.2f} id={result.order_id}")
     else:
@@ -54,10 +75,7 @@ def _sync_broker_close(broker: BaseBroker, symbol: str) -> None:
 def run_paper_cycle(cfg: dict, symbol: str, broker: BaseBroker | None = None) -> dict:
     """Executa um ciclo: baixa dados, processa último candle, salva estado."""
     strategy = get_strategy(cfg.get("estrategia", "ema_rsi"))
-    interval = cfg.get("paper_interval", cfg.get("interval", "5m"))
-    period = cfg.get("paper_periodo", "5d")
-
-    df = fetch_recent(symbol, interval=interval, period=period)
+    df = _fetch_candles(cfg, symbol)
     enriched = strategy.enrich(df, cfg)
     if len(enriched) < 2:
         return {"status": "dados_insuficientes"}
@@ -99,7 +117,13 @@ def run_paper_loop(cfg: dict, symbol: str, once: bool = False) -> None:
     broker = None
     if broker_name != "interno":
         broker = get_broker(broker_name, cfg)
-        print(f"Broker: {broker_name} | Caixa: {broker.get_cash():.2f}")
+        cash = broker.get_cash()
+        print(f"Broker: {broker_name} | Saldo: {cash:.2f}")
+        if broker_name in ("mt5", "fbs"):
+            from .mt5_session import Mt5Session
+
+            acc = Mt5Session.account_info(cfg)
+            print(f"  Conta MT5: {acc['login']} @ {acc['server']} ({acc['currency']})")
 
     intervalo = int(cfg.get("paper_poll_segundos", 300))
     print(f"Paper trading — {symbol} | estratégia: {cfg.get('estrategia')}")
