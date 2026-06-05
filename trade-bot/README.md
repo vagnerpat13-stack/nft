@@ -21,6 +21,17 @@ cd trade-bot
 pip install -r requirements.txt
 ```
 
+## Memória adaptativa (preset pronto)
+
+Combinação recomendada: **`ema_rsi`** + **GBPUSD 1h** + memória calibrada.
+
+```bash
+python run.py -c config.adaptativo.yaml backtest
+python run.py -c config.fbs-adaptativo.yaml paper --once   # FBS MT5
+```
+
+Guia: [docs/MEMORIA_ADAPTATIVA.md](docs/MEMORIA_ADAPTATIVA.md)
+
 ## Estratégias com maior taxa de acerto (backtest interno)
 
 | Estratégia | Melhor em | Taxa de acerto* | Retorno* |

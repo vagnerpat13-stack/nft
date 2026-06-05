@@ -1,0 +1,52 @@
+# Preset: memória adaptativa + ema_rsi
+# Melhor combinação nos backtests internos: GBPUSD 1h (~53% acerto com adaptativo)
+#
+# Backtest (yfinance):
+#   python run.py -c config.adaptativo.yaml backtest
+#
+# Paper simulado:
+#   python run.py -c config.adaptativo.yaml paper --once
+
+estrategia: ema_rsi
+
+symbol: GBPUSD=X
+interval: 1h
+period: 730d
+
+# R:R 1:3 (1,5% stop → 4,5% alvo) — mesma proporção, bom para ema_rsi + adaptativo
+stop_loss_pct: 0.015
+take_profit_pct: 0.045
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 5
+drawdown_max_pct: 0.15
+
+broker: simulado
+fonte_dados: auto
+
+# Sinais EMA + RSI
+ema_rapida: 9
+ema_lenta: 21
+rsi_periodo: 14
+rsi_sobrecompra: 70
+rsi_sobrevenda: 30
+
+# Memória adaptativa (calibrada para regimes trend/rsi/vol)
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+paper_interval: 1h
+paper_periodo: 60d
+paper_poll_segundos: 300
+arquivo_estado: data/estado-adaptativo.json
+
+# --- Alternativa ações BR (descomente) ---
+# symbol: PETR4.SA
+# interval: 1d
+# period: 2y
+# stop_loss_pct: 0.02
+# take_profit_pct: 0.04
+# estrategia: rsi_bb
