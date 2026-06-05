@@ -66,6 +66,24 @@ python run.py paper --symbol PETR4.SA --estrategia ema_rsi
 
 O estado (capital, memória adaptativa, posição aberta) é salvo em `data/estado.json`.
 
+## Forex R:R 1:3 (stop 1 → alvo 3)
+
+Proporção **1:3** = se o stop perde 1%, o take profit busca 3% (`take_profit_pct = 3 × stop_loss_pct`).
+
+| Estratégia | Par | SL / TP | Taxa de acerto* | Retorno* |
+|------------|-----|---------|-----------------|----------|
+| **`ema_pullback`** | GBPUSD 1h | 1% / 3% | **~45%** | +8,7% |
+| **`ema_rsi`** | GBPUSD 1h | 1,5% / 4,5% | **~47%** | +21% |
+| `bb_reversion` | GBPUSD 1h | 1,2% / 3,6% | ~45% | +16% |
+
+\*Backtest ~2 anos (yfinance). Break-even teórico com 1:3 ≈ **25%** de acerto.
+
+```bash
+python run.py -c config.forex-rr13.yaml backtest
+python run.py -c config.fbs-forex-rr13.yaml paper --once   # FBS MT5
+python3 scripts/research_forex_rr13.py                     # repetir pesquisa
+```
+
 ## FBS + MetaTrader 5 (Forex / CFD)
 
 A FBS opera pelo **terminal MT5**. O robô conecta via biblioteca `MetaTrader5` no **Windows**.

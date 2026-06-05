@@ -1,0 +1,44 @@
+# Forex — R:R 1:3 (risco 1 → alvo 3)
+# Pesquisa interna (730d, 1h): melhor equilíbrio acerto + lucro em GBPUSD
+#
+# Opção A (exato 1% : 3%): ema_pullback ~45% acerto, +8,7%
+# Opção B (1,5% : 4,5%, mesmo 1:3): ema_rsi ~47% acerto, +21%
+
+estrategia: ema_pullback
+
+symbol: GBPUSD=X
+interval: 1h
+period: 730d
+
+# Proporção 1:3 — TP deve ser sempre 3 × SL
+stop_loss_pct: 0.01
+take_profit_pct: 0.03
+
+pullback_rsi_min_long: 35
+pullback_rsi_max_long: 48
+pullback_rsi_min_short: 52
+pullback_rsi_max_short: 65
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 5
+drawdown_max_pct: 0.15
+
+broker: simulado
+fonte_dados: auto
+
+ema_rapida: 9
+ema_lenta: 21
+rsi_periodo: 14
+rsi_sobrecompra: 70
+rsi_sobrevenda: 30
+
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+paper_interval: 1h
+paper_periodo: 60d
+paper_poll_segundos: 300
+arquivo_estado: data/estado-forex-rr13.json
