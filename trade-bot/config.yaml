@@ -1,0 +1,26 @@
+# Modo: backtest | paper (paper = simulação em tempo real sem ordens reais)
+mode: backtest
+
+symbol: PETR4.SA
+interval: 1d
+period: 2y
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.02
+stop_loss_pct: 0.03
+take_profit_pct: 0.06
+max_operacoes_dia: 3
+drawdown_max_pct: 0.15
+
+# Estratégia base (EMA + RSI)
+ema_rapida: 9
+ema_lenta: 21
+rsi_periodo: 14
+rsi_sobrecompra: 70
+rsi_sobrevenda: 30
+
+# Adaptação aos erros
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995

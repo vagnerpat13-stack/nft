@@ -18,6 +18,7 @@ conhecimento/                            # Base SEE/MG, Simave, por série
 templates/plano-aula-50min.md            # Modelo de aula
 exemplos/                                # Planos prontos (amostra)
 dados/professor.template.json            # Seus dados de turma
+trade-bot/                               # Robô de trade adaptativo (backtest)
 ```
 
 ## Situação letiva considerada (2026)
