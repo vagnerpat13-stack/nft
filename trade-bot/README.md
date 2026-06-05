@@ -21,6 +21,17 @@ cd trade-bot
 pip install -r requirements.txt
 ```
 
+## Scalper R:R 1:1,5 (fixo)
+
+Alvo **sempre** 1,5× o stop (`rr_ratio: 1.5` no config). Break-even ≈ **40%** de acerto.
+
+```bash
+python run.py -c config.scalp.yaml backtest
+python run.py -c config.fbs-scalp.yaml paper --once
+```
+
+Guia: [docs/SCALP_RR.md](docs/SCALP_RR.md)
+
 ## Modo ATIVO (mais operações no mês)
 
 Para **mais trades**, use `bb_active` com stop/alvo **curtos** (fecha rápido → abre outra posição).

@@ -27,6 +27,19 @@ class Position:
     context: object  # SignalContext — evita import circular
 
 
+def apply_rr_ratio(cfg: dict) -> dict:
+    """
+    Garante take_profit = stop × rr_ratio quando rr_ratio está definido.
+    Ex.: rr_ratio: 1.5 → risco 1, alvo 1,5 (sempre 1:1,5).
+    """
+    ratio = cfg.get("rr_ratio")
+    if ratio is None:
+        return cfg
+    sl = float(cfg.get("stop_loss_pct", 0.01))
+    cfg = {**cfg, "take_profit_pct": round(sl * float(ratio), 6)}
+    return cfg
+
+
 def position_size(capital: float, entry: float, stop_pct: float, risk_pct: float) -> float:
     risk_amount = capital * risk_pct
     stop_distance = entry * stop_pct

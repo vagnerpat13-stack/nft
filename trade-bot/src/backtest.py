@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 import pandas as pd
 
 from .engine import EngineState, TradeRecord, TradingEngine
+from .risk import apply_rr_ratio
 from .strategies import get_strategy
 
 
@@ -24,6 +25,7 @@ class BacktestResult:
 
 
 def run_backtest(df: pd.DataFrame, cfg: dict) -> BacktestResult:
+    cfg = apply_rr_ratio(cfg)
     strategy = get_strategy(cfg.get("estrategia", "ema_rsi"))
     enriched = strategy.enrich(df, cfg)
     engine = TradingEngine(strategy, cfg)

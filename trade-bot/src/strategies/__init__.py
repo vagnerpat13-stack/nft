@@ -11,6 +11,7 @@ from .ema_rsi import EmaRsiStrategy
 from .macd_bb import MacdBbStrategy
 from .rsi_bb import RsiBbStrategy
 from .rsi_cross import RsiCrossStrategy
+from .scalp_momentum import ScalpMomentumStrategy
 
 STRATEGIES: dict[str, type[BaseStrategy]] = {
     "ema_rsi": EmaRsiStrategy,
@@ -21,6 +22,7 @@ STRATEGIES: dict[str, type[BaseStrategy]] = {
     "ema_cross": EmaCrossStrategy,
     "bb_active": BbActiveStrategy,
     "rsi_cross": RsiCrossStrategy,
+    "scalp_momentum": ScalpMomentumStrategy,
 }
 
 

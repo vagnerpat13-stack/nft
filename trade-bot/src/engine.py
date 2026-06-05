@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 import pandas as pd
 
 from .adaptive import AdaptiveMemory
-from .risk import Position, RiskConfig, check_exit, open_position, pnl
+from .risk import Position, RiskConfig, apply_rr_ratio, check_exit, open_position, pnl
 from .strategies.base import BaseStrategy
 from .strategy import Signal
 
@@ -50,7 +50,8 @@ class TradingEngine:
         state: EngineState | None = None,
     ):
         self.strategy = strategy
-        self.cfg = cfg
+        self.cfg = apply_rr_ratio(cfg)
+        cfg = self.cfg
         self.memory = memory or AdaptiveMemory(
             penalidade_erro=cfg["penalidade_erro"],
             bonus_acerto=cfg["bonus_acerto"],

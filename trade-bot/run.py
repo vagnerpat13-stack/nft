@@ -19,8 +19,11 @@ from src.paper_trading import run_paper_loop  # noqa: E402
 
 
 def load_config(path: Path) -> dict:
+    from src.risk import apply_rr_ratio
+
     with path.open(encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        cfg = yaml.safe_load(f)
+    return apply_rr_ratio(cfg)
 
 
 def print_report(result, symbol: str, capital_inicial: float, estrategia: str) -> None:
@@ -142,7 +145,7 @@ def main() -> int:
         "--estrategia",
         choices=[
             "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
-            "ema_cross", "bb_active", "rsi_cross",
+            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum",
         ],
         help="Estratégia de sinais",
     )
@@ -172,7 +175,7 @@ def main() -> int:
         "--estrategia",
         choices=[
             "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
-            "ema_cross", "bb_active", "rsi_cross",
+            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum",
         ],
     )
 

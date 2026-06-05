@@ -1,0 +1,45 @@
+# Scalper — R:R FIXO 1:1,5 (sempre alvo = 1,5 × stop)
+# take_profit_pct é calculado automaticamente a partir de stop_loss_pct
+#
+#   python run.py -c config.scalp.yaml backtest
+#   python run.py -c config.scalp.yaml simular-mes
+
+# bb_active = mais ops/mês | scalp_momentum = EMA+RSI rápido
+estrategia: bb_active
+
+symbol: GBPUSD=X
+interval: 1h
+period: 730d
+
+# Risco 1 → Alvo 1,5 (não altere take_profit manualmente)
+rr_ratio: 1.5
+stop_loss_pct: 0.004
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.008
+max_operacoes_dia: 20
+drawdown_max_pct: 0.12
+
+bb_periodo: 20
+bb_desvio: 2.0
+bb_toque_pct: 0.001
+rsi_periodo: 14
+
+# Alternativa scalp_momentum:
+# estrategia: scalp_momentum
+# ema_rapida: 5
+# ema_lenta: 13
+# rsi_periodo: 7
+
+confianca_minima: 0.36
+penalidade_erro: 0.07
+bonus_acerto: 0.03
+decaimento_memoria: 0.995
+
+broker: simulado
+fonte_dados: auto
+
+paper_interval: 1h
+paper_periodo: 60d
+paper_poll_segundos: 120
+arquivo_estado: data/estado-scalp.json
