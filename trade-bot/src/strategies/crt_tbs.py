@@ -155,12 +155,13 @@ class CrtTbsStrategy(BaseStrategy):
             return None
         stop, target = levels
 
+        use_fixed = cfg.get("crt_usar_stop_fixo", False)
         return Signal(
             index=i,
             side=side,
             price=float(row["Close"]),
             confianca=memory.confianca(ctx),
             context=ctx,
-            stop_price=stop,
-            target_price=target,
+            stop_price=None if use_fixed else stop,
+            target_price=None if use_fixed else target,
         )
