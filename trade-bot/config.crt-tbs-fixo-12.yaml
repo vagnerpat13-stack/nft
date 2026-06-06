@@ -1,0 +1,38 @@
+# CRT + TBS — STOP FIXO + R:R 1:2
+# SL 0,6% → TP 1,2% (automático via rr_ratio)
+#
+# Backtest GBPUSD ~2 anos: ~46% acerto, +13,7%
+#   python run.py -c config.crt-tbs-fixo-12.yaml backtest
+#   python run.py -c config.crt-tbs-fixo-12.yaml simular-mes
+
+estrategia: crt_tbs
+
+symbol: GBPUSD=X
+interval: 1h
+period: 730d
+
+rr_ratio: 2
+stop_loss_pct: 0.006
+crt_usar_stop_fixo: true
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 8
+drawdown_max_pct: 0.15
+
+crt_referencia: daily
+tbs_exige_corpo: true
+tbs_sweep_min_pct: 0.0002
+
+rsi_periodo: 14
+confianca_minima: 0.42
+penalidade_erro: 0.10
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+broker: simulado
+fonte_dados: auto
+paper_interval: 1h
+paper_periodo: 60d
+paper_poll_segundos: 300
+arquivo_estado: data/estado-crt-tbs-fixo-12.json
