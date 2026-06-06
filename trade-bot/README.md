@@ -21,6 +21,17 @@ cd trade-bot
 pip install -r requirements.txt
 ```
 
+## CRT + TBS (Candle Range Theory + Turtle Soup)
+
+Estratégia ICT: sweep de liquidez no range do **dia anterior** + reversão (TBS).
+
+```bash
+python run.py -c config.crt-tbs.yaml backtest
+python run.py -c config.crt-tbs.yaml simular-mes
+```
+
+Guia: [docs/CRT_TBS.md](docs/CRT_TBS.md) — backtest GBPUSD ~**+14%**, **53%** acerto (2 anos).
+
 ## Scalper R:R 1:1,5 (fixo)
 
 Alvo **sempre** 1,5× o stop (`rr_ratio: 1.5` no config). Break-even ≈ **40%** de acerto.

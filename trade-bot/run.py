@@ -145,7 +145,7 @@ def main() -> int:
         "--estrategia",
         choices=[
             "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
-            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum",
+            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum", "crt_tbs",
         ],
         help="Estratégia de sinais",
     )
@@ -175,7 +175,7 @@ def main() -> int:
         "--estrategia",
         choices=[
             "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
-            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum",
+            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum", "crt_tbs",
         ],
     )
 

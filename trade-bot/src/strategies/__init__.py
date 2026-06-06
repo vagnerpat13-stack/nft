@@ -5,6 +5,7 @@ from __future__ import annotations
 from .base import BaseStrategy
 from .bb_active import BbActiveStrategy
 from .bb_reversion import BbReversionStrategy
+from .crt_tbs import CrtTbsStrategy
 from .ema_cross import EmaCrossStrategy
 from .ema_pullback import EmaPullbackStrategy
 from .ema_rsi import EmaRsiStrategy
@@ -23,6 +24,7 @@ STRATEGIES: dict[str, type[BaseStrategy]] = {
     "bb_active": BbActiveStrategy,
     "rsi_cross": RsiCrossStrategy,
     "scalp_momentum": ScalpMomentumStrategy,
+    "crt_tbs": CrtTbsStrategy,
 }
 
 
