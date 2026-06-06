@@ -12,7 +12,11 @@ interval: 1h
 period: 730d
 
 rr_ratio: 1.5
+# stop_loss_pct só fallback se sweep inválido; CRT usa wick do sweep
 stop_loss_pct: 0.006
+crt_stop_buffer_pct: 0.0005
+crt_stop_max_pct: 0.015
+crt_alvo_extremo: true
 
 capital_inicial: 10000.0
 risco_por_operacao: 0.01

@@ -23,7 +23,17 @@
 
 **Alvos:** R:R fixo **1:1,5** (`rr_ratio: 1.5`).
 
-## Backtest interno (GBPUSD 1h, ~2 anos)
+## Stop e alvo (correto para CRT+TBS)
+
+| | Antes (errado) | Agora (correto) |
+|--|----------------|-----------------|
+| **Stop** | % fixo (0,6%) | **Abaixo/acima do wick do sweep** + buffer |
+| **Alvo** | % fixo (0,9%) | **R:R 1:1,5** a partir do stop real, limitado ao extremo oposto do range CRT |
+
+Parâmetros:
+- `crt_stop_buffer_pct` — margem além do wick (0,05%)
+- `crt_stop_max_pct` — teto se o sweep for muito largo
+- `crt_alvo_extremo` — usa máxima/mínima do range CRT como teto do alvo
 
 | Métrica | Resultado |
 |---------|-----------|

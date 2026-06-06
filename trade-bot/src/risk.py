@@ -57,17 +57,28 @@ def open_position(
     cfg: RiskConfig,
     context: object,
     confianca: float,
+    stop_price: float | None = None,
+    target_price: float | None = None,
 ) -> Position | None:
-    qty = position_size(cfg.capital, price, cfg.stop_loss_pct, cfg.risco_por_operacao)
+    if stop_price is not None and target_price is not None:
+        stop, target = float(stop_price), float(target_price)
+        if side == "long" and (stop >= price or target <= price):
+            return None
+        if side == "short" and (stop <= price or target >= price):
+            return None
+        stop_pct = abs(price - stop) / price
+        qty = position_size(cfg.capital, price, stop_pct, cfg.risco_por_operacao)
+    else:
+        qty = position_size(cfg.capital, price, cfg.stop_loss_pct, cfg.risco_por_operacao)
+        if side == "long":
+            stop = price * (1 - cfg.stop_loss_pct)
+            target = price * (1 + cfg.take_profit_pct)
+        else:
+            stop = price * (1 + cfg.stop_loss_pct)
+            target = price * (1 - cfg.take_profit_pct)
+
     if qty <= 0:
         return None
-
-    if side == "long":
-        stop = price * (1 - cfg.stop_loss_pct)
-        target = price * (1 + cfg.take_profit_pct)
-    else:
-        stop = price * (1 + cfg.stop_loss_pct)
-        target = price * (1 - cfg.take_profit_pct)
 
     return Position(
         side=side,

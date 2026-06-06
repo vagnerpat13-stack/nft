@@ -57,7 +57,7 @@ def _sync_broker_open(broker: BaseBroker, symbol: str, engine: TradingEngine) ->
         pos.quantity,
         stop=pos.stop,
         target=pos.target,
-    )  # type: ignore[arg-type]
+    )
     if result.ok:
         print(f"  [broker] Abertura {pos.side} @ {result.filled_price:.2f} id={result.order_id}")
     else:

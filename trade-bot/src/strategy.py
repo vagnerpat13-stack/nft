@@ -17,3 +17,5 @@ class Signal:
     price: float
     confianca: float
     context: SignalContext
+    stop_price: float | None = None
+    target_price: float | None = None

@@ -129,6 +129,8 @@ class TradingEngine:
                     self.risk,
                     sig.context,
                     sig.confianca,
+                    stop_price=sig.stop_price,
+                    target_price=sig.target_price,
                 )
                 if pos:
                     self.state.position = pos
