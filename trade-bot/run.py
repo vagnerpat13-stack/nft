@@ -26,6 +26,70 @@ def load_config(path: Path) -> dict:
     return apply_rr_ratio(cfg)
 
 
+MOTIVO_LABEL = {
+    "be": "breakeven (proteger lucro)",
+    "trail": "trailing (proteger lucro)",
+    "apertar": "apertar (reduzir perda — memória)",
+    "tempo": "apertar (reduzir perda — tempo)",
+    "stop": "stop original",
+    "stop_be": "stop no breakeven",
+    "stop_trail": "trailing stop",
+    "stop_apertar": "stop apertado (memória)",
+    "stop_tempo": "stop apertado (tempo)",
+    "target": "alvo atingido",
+    "fechamento": "fechamento forçado",
+}
+
+
+def print_stop_report(result, cfg: dict) -> None:
+    events = result.stop_events
+    trades = result.trades
+    if not cfg.get("stop_dinamico"):
+        print("  stop_dinamico: desligado — use config.crt-tbs-dinamico.yaml\n")
+        return
+
+    print(f"\n{'=' * 50}")
+    print("  Stop dinâmico — resumo dos ajustes")
+    print(f"{'=' * 50}")
+    print(f"  Total de ajustes:    {len(events)}")
+    por_motivo: dict[str, int] = {}
+    for e in events:
+        por_motivo[e.motivo] = por_motivo.get(e.motivo, 0) + 1
+    for m, n in sorted(por_motivo.items()):
+        print(f"    {MOTIVO_LABEL.get(m, m):35} {n}")
+
+    por_saida: dict[str, int] = {}
+    for t in trades:
+        por_saida[t.motivo] = por_saida.get(t.motivo, 0) + 1
+    print("\n  Saídas por motivo:")
+    for m, n in sorted(por_saida.items()):
+        print(f"    {MOTIVO_LABEL.get(m, m):35} {n}")
+    print(f"{'=' * 50}\n")
+
+    if events:
+        print("Linha do tempo dos ajustes de stop:")
+        for e in events:
+            seta = "↑" if e.lado == "long" else "↓"
+            print(
+                f"  [{str(e.barra)[:16]}] {e.lado:5} {seta} "
+                f"{e.stop_de:.5f} → {e.stop_para:.5f} | "
+                f"{MOTIVO_LABEL.get(e.motivo, e.motivo)} | "
+                f"{e.profit_r:+.2f}R conf={e.confianca:.2f}"
+            )
+        print()
+
+    if trades:
+        print("Operações (stop inicial → final):")
+        for i, t in enumerate(trades, 1):
+            sinal = "+" if t.lucro > 0 else ""
+            print(
+                f"  {i}. {t.lado:5} {str(t.entrada)[:16]} → {str(t.saida)[:16]} | "
+                f"{sinal}R$ {t.lucro:.2f} ({MOTIVO_LABEL.get(t.motivo, t.motivo)}) | "
+                f"stop {t.stop_inicial:.5f}→{t.stop_final:.5f} ({t.ajustes_stop} ajustes)"
+            )
+        print()
+
+
 def print_report(result, symbol: str, capital_inicial: float, estrategia: str) -> None:
     retorno = (result.capital_final / capital_inicial - 1) * 100
     print(f"\n{'=' * 50}")
@@ -48,9 +112,39 @@ def print_report(result, symbol: str, capital_inicial: float, estrategia: str) -
             sinal = "+" if t.lucro > 0 else ""
             print(
                 f"  {t.lado:5} {t.entrada[:10]} → {t.saida[:10]} | "
-                f"{sinal}R$ {t.lucro:.2f} ({t.motivo}) conf={t.confianca:.2f}"
+                f"{sinal}R$ {t.lucro:.2f} ({MOTIVO_LABEL.get(t.motivo, t.motivo)}) "
+                f"conf={t.confianca:.2f}"
             )
         print()
+
+
+def cmd_simular_stop(cfg: dict, args: argparse.Namespace) -> int:
+    """Simula stop dinâmico com log detalhado de cada ajuste."""
+    symbol = args.symbol or cfg["symbol"]
+    estrategia = args.estrategia or cfg.get("estrategia", "ema_rsi")
+    interval = cfg.get("interval", "1h")
+    dias = args.dias
+    cfg = {**cfg, "estrategia": estrategia}
+
+    if not cfg.get("stop_dinamico"):
+        print("AVISO: stop_dinamico=false neste config. Use config.crt-tbs-dinamico.yaml")
+
+    df = fetch(symbol, period="1mo", interval=interval)
+    cutoff = df.index[-1] - pd.Timedelta(days=dias)
+    df_m = df[df.index >= cutoff].copy()
+
+    print(f"Simulação stop dinâmico — últimos {dias} dias")
+    print(f"  {symbol} | {interval} | {estrategia}")
+    print(f"  Breakeven: {cfg.get('breakeven_apos_rr', 0.5)}R | "
+          f"Trailing: {cfg.get('trailing_apos_rr', 1.0)}R")
+    print(f"  Apertar perda: conf<{cfg.get('apertar_se_confianca_abaixo', 0.4)} | "
+          f"após {cfg.get('apertar_apos_barras', 0)} barras")
+    print(f"  De {df_m.index[0]} até {df_m.index[-1]} ({len(df_m)} candles)")
+
+    result = run_backtest(df_m, cfg)
+    print_report(result, symbol, cfg["capital_inicial"], estrategia)
+    print_stop_report(result, cfg)
+    return 0
 
 
 def cmd_backtest(cfg: dict, args: argparse.Namespace) -> int:
@@ -179,6 +273,20 @@ def main() -> int:
         ],
     )
 
+    p_stop = sub.add_parser(
+        "simular-stop",
+        help="Simula stop dinâmico com log de cada ajuste (proteger lucro / reduzir perda)",
+    )
+    p_stop.add_argument("--symbol", help="Símbolo")
+    p_stop.add_argument("--dias", type=int, default=30, help="Janela em dias (padrão 30)")
+    p_stop.add_argument(
+        "--estrategia",
+        choices=[
+            "ema_rsi", "macd_bb", "rsi_bb", "ema_pullback", "bb_reversion",
+            "ema_cross", "bb_active", "rsi_cross", "scalp_momentum", "crt_tbs",
+        ],
+    )
+
     args = parser.parse_args()
     cfg = load_config(args.config)
 
@@ -190,6 +298,8 @@ def main() -> int:
         return cmd_mt5_test(cfg, args)
     if args.command == "simular-mes":
         return cmd_simular_mes(cfg, args)
+    if args.command == "simular-stop":
+        return cmd_simular_stop(cfg, args)
     return 1
 
 

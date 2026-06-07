@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 import pandas as pd
 
-from .engine import EngineState, TradeRecord, TradingEngine
+from .engine import EngineState, StopAdjustEvent, TradeRecord, TradingEngine
 from .risk import apply_rr_ratio
 from .strategies import get_strategy
 
@@ -14,6 +14,7 @@ from .strategies import get_strategy
 @dataclass
 class BacktestResult:
     trades: list[TradeRecord] = field(default_factory=list)
+    stop_events: list[StopAdjustEvent] = field(default_factory=list)
     equity_curve: list[float] = field(default_factory=list)
     capital_final: float = 0.0
     taxa_acerto: float = 0.0
@@ -40,6 +41,7 @@ def run_backtest(df: pd.DataFrame, cfg: dict) -> BacktestResult:
 
     return BacktestResult(
         trades=engine.state.trades,
+        stop_events=engine.state.stop_events,
         equity_curve=equity,
         capital_final=metrics["capital_final"],
         taxa_acerto=metrics["taxa_acerto"],

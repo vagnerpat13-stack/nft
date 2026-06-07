@@ -36,6 +36,7 @@ stop_dinamico: true
 ```bash
 python run.py -c config.crt-tbs-dinamico.yaml backtest
 python run.py -c config.crt-tbs-dinamico.yaml simular-mes
+python run.py -c config.crt-tbs-dinamico.yaml simular-stop   # log de cada ajuste
 ```
 
 Compare com `config.crt-tbs-fixo-12.yaml` (mesmo setup sem stop dinâmico).

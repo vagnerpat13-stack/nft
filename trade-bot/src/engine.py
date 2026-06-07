@@ -14,6 +14,18 @@ from .strategy import Signal
 
 
 @dataclass
+class StopAdjustEvent:
+    entrada: str
+    barra: str
+    lado: str
+    stop_de: float
+    stop_para: float
+    motivo: str
+    profit_r: float
+    confianca: float
+
+
+@dataclass
 class TradeRecord:
     entrada: str
     saida: str
@@ -23,6 +35,9 @@ class TradeRecord:
     lucro: float
     motivo: str
     confianca: float
+    stop_inicial: float = 0.0
+    stop_final: float = 0.0
+    ajustes_stop: int = 0
 
 
 @dataclass
@@ -32,6 +47,7 @@ class EngineState:
     position: Position | None = None
     ops_no_dia: dict[str, int] = field(default_factory=dict)
     trades: list[TradeRecord] = field(default_factory=list)
+    stop_events: list[StopAdjustEvent] = field(default_factory=list)
     halted: bool = False
 
 
@@ -94,6 +110,7 @@ class TradingEngine:
         if self.state.position is not None:
             pos = self.state.position
             bars_open = i - pos.entry_index
+            stop_antes = pos.stop
             adj = adjust_dynamic_stop(
                 pos,
                 float(row["High"]),
@@ -105,6 +122,24 @@ class TradingEngine:
             )
             if adj:
                 pos.last_stop_adjust = adj
+                risk = abs(pos.entry_price - pos.initial_stop) or 1e-9
+                close = float(row["Close"])
+                if pos.side == "long":
+                    profit_r = (close - pos.entry_price) / risk
+                else:
+                    profit_r = (pos.entry_price - close) / risk
+                self.state.stop_events.append(
+                    StopAdjustEvent(
+                        entrada=str(enriched.index[pos.entry_index]),
+                        barra=str(row.name),
+                        lado=pos.side,
+                        stop_de=round(stop_antes, 5),
+                        stop_para=round(pos.stop, 5),
+                        motivo=adj,
+                        profit_r=round(profit_r, 2),
+                        confianca=round(self.memory.confianca(pos.context), 2),
+                    )
+                )
             exit_info = check_exit(
                 pos,
                 float(row["High"]),
@@ -129,6 +164,12 @@ class TradingEngine:
                     lucro=round(lucro, 2),
                     motivo=motivo,
                     confianca=pos.confianca_entrada,
+                    stop_inicial=round(pos.initial_stop, 5),
+                    stop_final=round(pos.stop, 5),
+                    ajustes_stop=sum(
+                        1 for e in self.state.stop_events
+                        if e.entrada == str(enriched.index[pos.entry_index])
+                    ),
                 )
                 self.state.trades.append(closed)
                 self.state.position = None
