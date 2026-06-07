@@ -8,6 +8,7 @@ import pandas as pd
 
 from .adaptive import AdaptiveMemory
 from .risk import Position, RiskConfig, apply_rr_ratio, check_exit, open_position, pnl
+from .stop_manager import adjust_dynamic_stop, exit_motivo
 from .strategies.base import BaseStrategy
 from .strategy import Signal
 
@@ -91,8 +92,21 @@ class TradingEngine:
             return StepResult(halted=True)
 
         if self.state.position is not None:
+            pos = self.state.position
+            bars_open = i - pos.entry_index
+            adj = adjust_dynamic_stop(
+                pos,
+                float(row["High"]),
+                float(row["Low"]),
+                float(row["Close"]),
+                self.cfg,
+                self.memory,
+                bars_open,
+            )
+            if adj:
+                pos.last_stop_adjust = adj
             exit_info = check_exit(
-                self.state.position,
+                pos,
                 float(row["High"]),
                 float(row["Low"]),
                 float(row["Close"]),
@@ -102,18 +116,19 @@ class TradingEngine:
 
             if exit_info:
                 exit_price, motivo = exit_info
-                lucro = pnl(self.state.position, exit_price)
+                motivo = exit_motivo(motivo, pos.last_stop_adjust)
+                lucro = pnl(pos, exit_price)
                 self.state.capital += lucro
-                self.memory.registrar(self.state.position.context, lucro)
+                self.memory.registrar(pos.context, lucro)
                 closed = TradeRecord(
-                    entrada=str(enriched.index[self.state.position.entry_index]),
+                    entrada=str(enriched.index[pos.entry_index]),
                     saida=str(row.name),
-                    lado=self.state.position.side,
-                    preco_entrada=self.state.position.entry_price,
+                    lado=pos.side,
+                    preco_entrada=pos.entry_price,
                     preco_saida=exit_price,
                     lucro=round(lucro, 2),
                     motivo=motivo,
-                    confianca=self.state.position.confianca_entrada,
+                    confianca=pos.confianca_entrada,
                 )
                 self.state.trades.append(closed)
                 self.state.position = None

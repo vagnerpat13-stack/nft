@@ -25,6 +25,9 @@ class Position:
     entry_index: int
     confianca_entrada: float
     context: object  # SignalContext — evita import circular
+    initial_stop: float = 0.0
+    best_price: float = 0.0
+    last_stop_adjust: str | None = None
 
 
 def apply_rr_ratio(cfg: dict) -> dict:
@@ -89,6 +92,8 @@ def open_position(
         entry_index=index,
         confianca_entrada=confianca,
         context=context,
+        initial_stop=stop,
+        best_price=price,
     )
 
 
