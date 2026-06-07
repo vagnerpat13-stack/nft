@@ -1,0 +1,37 @@
+# FBS MT5 — CRT + TBS
+# python run.py -c config.fbs-crt-tbs.yaml backtest  (yfinance no PC)
+# python run.py -c config.fbs-crt-tbs.yaml paper --once
+
+broker: mt5
+fonte_dados: mt5
+estrategia: crt_tbs
+
+symbol: GBPUSD
+mt5_symbol: GBPUSD
+
+paper_interval: 1h
+mt5_barras: 500
+paper_poll_segundos: 300
+arquivo_estado: data/estado-fbs-crt-tbs.json
+
+rr_ratio: 1.5
+stop_loss_pct: 0.006
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 8
+drawdown_max_pct: 0.15
+
+crt_referencia: daily
+tbs_exige_corpo: true
+
+mt5_lote: 0.01
+mt5_magic: 202612
+mt5_desvio_pontos: 20
+
+confianca_minima: 0.42
+penalidade_erro: 0.10
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+rsi_periodo: 14

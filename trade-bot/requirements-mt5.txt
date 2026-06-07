@@ -1,0 +1,3 @@
+# Instalar apenas no Windows com FBS MetaTrader 5 aberto:
+# pip install -r requirements-mt5.txt
+MetaTrader5>=5.0.45

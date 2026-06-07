@@ -1,0 +1,47 @@
+# FBS MT5 — Scalper R:R 1:1,5 fixo
+# Terminal aberto | conta demo primeiro
+#
+#   python run.py mt5-test -c config.fbs-scalp.yaml
+#   python run.py -c config.fbs-scalp.yaml paper --once
+
+broker: mt5
+fonte_dados: mt5
+estrategia: bb_active
+
+bb_periodo: 20
+bb_desvio: 2.0
+bb_toque_pct: 0.001
+rsi_periodo: 14
+
+symbol: GBPUSD
+mt5_symbol: GBPUSD
+
+paper_interval: 1h
+# paper_interval: 15m
+mt5_barras: 500
+paper_poll_segundos: 120
+arquivo_estado: data/estado-fbs-scalp.json
+
+rr_ratio: 1.5
+stop_loss_pct: 0.004
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.008
+max_operacoes_dia: 20
+drawdown_max_pct: 0.12
+
+mt5_lote: 0.01
+mt5_magic: 202611
+mt5_desvio_pontos: 15
+mt5_fechar_apenas_magic: true
+
+ema_rapida: 5
+ema_lenta: 13
+rsi_periodo: 7
+scalp_rsi_min_long: 45
+scalp_rsi_max_short: 55
+
+confianca_minima: 0.36
+penalidade_erro: 0.07
+bonus_acerto: 0.03
+decaimento_memoria: 0.995

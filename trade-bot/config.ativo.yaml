@@ -1,0 +1,48 @@
+# Robô ATIVO — mais operações por mês (Forex)
+# Estratégia: bb_active (toque nas Bandas de Bollinger)
+# SL/TP curtos (0,4% / 1,2%) = R:R 1:3 e trades fecham mais rápido
+#
+# Backtest 6 meses (GBPUSD 1h): ~6–11 ops/mês nos testes internos
+#   python run.py -c config.ativo.yaml backtest
+#   python run.py -c config.ativo.yaml simular-mes
+
+estrategia: bb_active
+
+symbol: GBPUSD=X
+interval: 1h
+period: 730d
+
+stop_loss_pct: 0.004
+take_profit_pct: 0.012
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 15
+drawdown_max_pct: 0.15
+
+# Memória leve (não bloqueia tanto quanto 0.45)
+confianca_minima: 0.38
+penalidade_erro: 0.08
+bonus_acerto: 0.03
+decaimento_memoria: 0.995
+
+bb_periodo: 20
+bb_desvio: 2.0
+bb_toque_pct: 0.001
+rsi_periodo: 14
+
+broker: simulado
+fonte_dados: auto
+
+paper_interval: 1h
+paper_periodo: 60d
+paper_poll_segundos: 180
+arquivo_estado: data/estado-ativo.json
+
+# Mais agressivo ainda (~8+ ops/mês): descomente
+# estrategia: ema_cross
+# ema_rapida: 5
+# ema_lenta: 13
+# stop_loss_pct: 0.003
+# take_profit_pct: 0.009
+# confianca_minima: 0.0

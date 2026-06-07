@@ -1,0 +1,49 @@
+# FBS MetaTrader 5 — Forex R:R 1:3
+# Conta demo primeiro. Terminal MT5 aberto no Windows.
+
+broker: mt5
+fonte_dados: mt5
+estrategia: ema_pullback
+
+symbol: GBPUSD
+mt5_symbol: GBPUSD
+
+# R:R 1:3 — TP = 3 × SL (ex.: 100 pips stop → 300 pips alvo)
+stop_loss_pct: 0.01
+take_profit_pct: 0.03
+
+pullback_rsi_min_long: 35
+pullback_rsi_max_long: 48
+pullback_rsi_min_short: 52
+pullback_rsi_max_short: 65
+
+paper_interval: 1h
+mt5_barras: 500
+paper_poll_segundos: 300
+arquivo_estado: data/estado-fbs-forex-rr13.json
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 5
+drawdown_max_pct: 0.15
+
+mt5_lote: 0.01
+mt5_magic: 202608
+mt5_desvio_pontos: 25
+mt5_fechar_apenas_magic: true
+
+ema_rapida: 9
+ema_lenta: 21
+rsi_periodo: 14
+rsi_sobrecompra: 70
+rsi_sobrevenda: 30
+
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+# Alternativa maior acerto (mesmo 1:3): ema_rsi com SL 1,5% / TP 4,5%
+# estrategia: ema_rsi
+# stop_loss_pct: 0.015
+# take_profit_pct: 0.045

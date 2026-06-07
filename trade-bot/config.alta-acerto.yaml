@@ -1,0 +1,43 @@
+# Preset: estratégias com maior taxa de acerto nos backtests internos
+# PETR4 (ações BR, diário) → rsi_bb | FBS EURUSD (1h) → ema_pullback ou rsi_bb
+
+estrategia: rsi_bb
+
+# TP menor que SL = mais acertos (scalp de reversão)
+take_profit_pct: 0.02
+stop_loss_pct: 0.04
+
+symbol: PETR4.SA
+interval: 1d
+period: 2y
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.02
+max_operacoes_dia: 3
+drawdown_max_pct: 0.15
+
+broker: simulado
+fonte_dados: auto
+
+rsi_periodo: 14
+rsi_sobrevenda: 32
+rsi_sobrecompra: 68
+bb_periodo: 20
+bb_desvio: 2.0
+rsi_bb_tolerancia: 1.005
+
+ema_rapida: 9
+ema_lenta: 21
+macd_rapido: 12
+macd_lento: 26
+macd_sinal: 9
+
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+paper_interval: 5m
+paper_periodo: 5d
+paper_poll_segundos: 300
+arquivo_estado: data/estado-alta-acerto.json

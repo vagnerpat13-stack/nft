@@ -1,0 +1,52 @@
+# CRT + TBS — Stop FIXO 1:2 + STOP DINÂMICO (agente)
+# O stop se move para: breakeven, trailing, ou apertar perda (memória adaptativa)
+#
+#   python run.py -c config.crt-tbs-dinamico.yaml backtest
+#   python run.py -c config.crt-tbs-dinamico.yaml simular-mes
+#   python run.py -c config.crt-tbs-dinamico.yaml simular-stop
+
+estrategia: crt_tbs
+
+symbol: GBPUSD=X
+interval: 1h
+period: 730d
+
+rr_ratio: 2
+stop_loss_pct: 0.006
+crt_usar_stop_fixo: true
+
+# --- Stop dinâmico (agente) ---
+stop_dinamico: true
+breakeven_apos_rr: 0.75
+breakeven_buffer_pct: 0.0002
+trailing_apos_rr: 1.2
+trailing_dist_pct: 0.004
+apertar_stop_adaptativo: true
+apertar_se_confianca_abaixo: 0.40
+apertar_queda_confianca: 0.08
+apertar_perda_rr: -0.30
+apertar_fator: 0.55
+apertar_apos_barras: 60
+apertar_fator_tempo: 0.65
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.01
+max_operacoes_dia: 8
+drawdown_max_pct: 0.15
+
+crt_referencia: daily
+tbs_exige_corpo: true
+tbs_sweep_min_pct: 0.0002
+
+rsi_periodo: 14
+confianca_minima: 0.42
+penalidade_erro: 0.10
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
+
+broker: simulado
+fonte_dados: auto
+paper_interval: 1h
+paper_periodo: 60d
+paper_poll_segundos: 300
+arquivo_estado: data/estado-crt-tbs-dinamico.json

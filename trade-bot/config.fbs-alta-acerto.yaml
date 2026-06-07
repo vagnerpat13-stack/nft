@@ -1,0 +1,39 @@
+# FBS / MT5 — preset alta taxa de acerto (EURUSD 1h, pesquisa interna ~79–83%)
+# Requer Windows + MT5 aberto. Ver docs/FBS_METATRADER.md
+
+broker: mt5
+fonte_dados: mt5
+estrategia: ema_pullback
+
+symbol: EURUSD
+mt5_symbol: EURUSD
+paper_interval: 1h
+mt5_barras: 500
+paper_poll_segundos: 300
+arquivo_estado: data/estado-fbs-alta-acerto.json
+
+take_profit_pct: 0.02
+stop_loss_pct: 0.04
+
+capital_inicial: 10000.0
+risco_por_operacao: 0.02
+max_operacoes_dia: 5
+drawdown_max_pct: 0.15
+
+mt5_lote: 0.01
+mt5_magic: 202607
+mt5_desvio_pontos: 30
+mt5_fechar_apenas_magic: true
+
+ema_rapida: 9
+ema_lenta: 21
+rsi_periodo: 14
+pullback_rsi_min_long: 35
+pullback_rsi_max_long: 48
+pullback_rsi_min_short: 52
+pullback_rsi_max_short: 65
+
+confianca_minima: 0.45
+penalidade_erro: 0.12
+bonus_acerto: 0.04
+decaimento_memoria: 0.995
